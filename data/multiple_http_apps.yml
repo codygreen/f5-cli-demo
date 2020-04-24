@@ -1,0 +1,14 @@
+tenant: demo
+apps:
+  - name: test1.f5demos.com
+    virtualAddresses:
+      - 10.1.10.10
+    serverAddresses:
+      - 10.1.20.20
+      - 10.1.20.21
+  - name: test2.f5demos.com
+    virtualAddresses:
+      - 10.1.10.10
+    serverAddresses:
+      - 10.1.20.20
+      - 10.1.20.21

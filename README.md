@@ -15,10 +15,16 @@ The included demos will use the following folder structure:
 - templates: contains the Jinja2 templates 
 - files: store the created declarations here
 
-# Demo
+# Example
+The *build_declaration.sh* shell script is a wrapper for the *jinja2* cli command.  It accepts a single argument which is the name used for the data YAML file and the Jinja2 template. 
+
 ```bash
-jinja2 ./templates/single_http_app.as3.j2 ./data/singe_http_app.yml --format=yaml > files/single_http_app.json
+./build_declaration.sh single_http_apps 
 f5 login --authentication-provider bigip --host 192.0.2.10 --user myuser
 f5 bigip extension as3 verify
 f5 bigip extension as3 create --declaration as3.json
 ```
+
+# Included Demos
+- Single HTTP application
+- Multiple HTTP applications
