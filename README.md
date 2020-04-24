@@ -16,13 +16,22 @@ The included demos will use the following folder structure:
 - declarations: store the created declarations here
 
 # Example
-The *build_declaration.sh* shell script is a wrapper for the *jinja2* cli command.  It accepts a single argument which is the name used for the data YAML file and the Jinja2 template. 
+The *build_declaration.sh* shell script is a wrapper for the *jinja2* cli command.  It accepts a single argument which is the name used for the data YAML file and the Jinja2 template. The second argument is the type of declaration being built.  It defaults to AS3 but you can pass do to create Declarative Onboarding declarations; see example in examples section.
 
+## Single HTTP Application
 ```bash
 ./build_declaration.sh single_http_apps 
 f5 login --authentication-provider bigip --host 192.0.2.10 --user myuser
 f5 bigip extension as3 verify
 f5 bigip extension as3 create --declaration as3.json
+```
+
+## BIG-IP DNS with 2 Network Interfaces
+```bash
+./build_declaration.sh dns_2nic do 
+f5 login --authentication-provider bigip --host 192.0.2.10 --user myuser
+f5 bigip extension do verify
+f5 bigip extension do create --declaration dns_2nic.json
 ```
 
 # Included Demos
@@ -32,6 +41,7 @@ f5 bigip extension as3 create --declaration as3.json
 
 ## Declarative Onboarding
 - LTM with 3 Network Interfaces
+- DNS with 2 Network Interfaces
 
 # Development
 If you have an example you would like to add please make a pull request.
