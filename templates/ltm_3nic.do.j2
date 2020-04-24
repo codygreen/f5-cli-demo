@@ -1,0 +1,75 @@
+{
+    "$schema": "https://raw.githubusercontent.com/F5Networks/f5-declarative-onboarding/master/src/schema/latest/base.schema.json",
+    "schemaVersion": "1.12.0",
+    "class": "Device",
+    "async": true,
+    "label": "LTM declaration for declarative onboarding",
+    "Common": {
+        "class": "Tenant",
+        "mySystem": {
+            "class": "System",
+            "hostname": "{{ hostname }}",
+            "cliInactivityTimeout": 1200,
+            "consoleInactivityTimeout": 1200,
+            "autoPhonehome": false
+        },
+        "myDns": {
+            "class": "DNS",
+            "nameServers": [
+                "{{ nameServers|join('", "') }}"
+            ],
+            "search": [
+                "{{ dnsSearchDomains|join('", "') }}"
+            ]
+        },
+        "myNtp": {
+            "class": "NTP",
+            "servers": [
+                "{{ ntpServers|join('", "') }}"
+            ],
+            "timezone": "{{ timezone }}"
+        },
+        "myProvisioning": {
+            "class": "Provision",
+            "ltm": "nominal"
+        },
+        "internal": {
+            "class": "VLAN",
+            "interfaces": [{
+                "name": "1.1"
+            }]
+        },
+        "internal-self": {
+            "class": "SelfIp",
+            "address": "{{ internalSelfIP }}",
+            "vlan": "internal",
+            "allowService": "default",
+            "trafficGroup": "traffic-group-local-only"
+        },
+        "external": {
+            "class": "VLAN",
+            "interfaces": [{
+                "name": "1.2"
+            }]
+        },
+        "external-self": {
+            "class": "SelfIp",
+            "address": "{{ externalSelfIP }}",
+            "vlan": "external",
+            "allowService": "none",
+            "trafficGroup": "traffic-group-local-only"
+        },
+        "default": {
+            "class": "Route",
+            "gw": "{{ defaultRoute }}",
+            "network": "default",
+            "mtu": 1500
+        },
+        "dbvars": {
+            "class": "DbVariables",
+            "ui.advisory.enabled": true,
+            "ui.advisory.color": "green",
+            "ui.advisory.text": "{{ bannerText }}"
+        }
+    }
+}
