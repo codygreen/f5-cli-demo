@@ -13,7 +13,7 @@ Please follow the links to install the dependencies.
 The included demos will use the following folder structure:
 - data: contains yaml file with the Jinja2 variable values
 - templates: contains the Jinja2 templates 
-- files: store the created declarations here
+- declarations: store the created declarations here
 
 # Example
 The *build_declaration.sh* shell script is a wrapper for the *jinja2* cli command.  It accepts a single argument which is the name used for the data YAML file and the Jinja2 template. 
