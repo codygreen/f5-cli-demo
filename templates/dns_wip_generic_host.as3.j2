@@ -1,0 +1,119 @@
+{
+    "$schema": "https://raw.githubusercontent.com/F5Networks/f5-appsvcs-extension/master/schema/latest/as3-schema.json",
+    "class": "AS3",
+    "action": "deploy",
+    "persist": true,
+    "declaration": {
+        "class": "ADC",
+        "schemaVersion": "3.19.0",
+        "id": "GSLB_Sample",
+        "Common": {
+            "class": "Tenant",
+            "Shared": {
+                "class": "Application",
+                "template": "shared",
+                "{{ dataCenter }}": {
+                    "class": "GSLB_Data_Center"
+                },
+                "vs_monitor": {
+                    "class": "GSLB_Monitor",
+                    "monitorType": "tcp",
+                    "send": ""
+                },
+                {% for server in servers -%}
+                "{{ server.name }}": {
+                    "class": "GSLB_Server",
+                    "dataCenter": {
+                        "use": "{{ dataCenter }}"
+                    },
+                    "devices": [{
+                        "address": "{{ server.ip }}"
+                    }],
+                    "serverType": "generic-host",
+                    "monitors": [{
+                        "use": "vs_monitor"
+                    }]
+                }, 
+                {% endfor -%}
+                "GTM": {
+                    "class": "GSLB_Server",
+                    "dataCenter": {
+                        "use": "UDF"
+                    },
+                    "devices": [{
+                        "address": "{{ DNSSelfIP }}"
+                    }]
+                }
+            }
+        },
+        "demo": {
+            "class": "Tenant",
+            "Application": {
+                "class": "Application",
+                "template": "generic",
+                "testUDP": {
+                    "class": "Service_UDP",
+                    "virtualAddresses": [
+                        "{{ DNSListenerIP }}"
+                    ],
+                    "virtualPort": 53,
+                    "profileDNS": {
+                        "bigip": "/Common/dns"
+                    },
+                    "profileUDP": {
+                        "bigip": "/Common/udp"
+                    }
+                },
+                "testTCP": {
+                    "class": "Service_TCP",
+                    "virtualAddresses": [
+                        "{{ DNSListenerIP }}"
+                    ],
+                    "virtualPort": 53,
+                    "profileDNS": {
+                        "bigip": "/Common/dns"
+                    },
+                    "profileTCP": {
+                        "bigip": "/Common/tcp"
+                    }
+                },
+                {% for wideIP in wideIPs -%}
+                "{{ wideIP.name }}": {
+                    "class": "GSLB_Domain",
+                    "domainName": "{{ wideIP.name }}",
+                    "resourceRecordType": "A",
+                    "poolLbMode": "ratio",
+                    "pools": [{
+                        "use": "wipMonitor"
+                    }]
+                },
+                {% endfor -%}
+                "wipMonitor": {
+                    "class": "GSLB_Monitor",
+                    "monitorType": "tcp",
+                    "send": ""
+                },
+                {% for wideIP in wideIPs -%}
+                "pool_{{ wideIP.name }}": {
+                    "class": "GSLB_Pool",
+                    "members": [ 
+                    {% for pool_member in wideIP.pool_members -%}
+                        {
+                            "ratio": 10,
+                            "server": {
+                                "use": "/Common/Shared/{{ pool_member }}"
+                            },
+                            "virtualServer": "0"
+                        }
+                    {% endfor -%}
+                    ],
+                    "monitors": [{
+                        "use": "wipMonitor"
+                    }],
+                    "resourceRecordType": "A"
+                }
+                {% endfor %}
+            }
+        }
+    }
+}

@@ -1,0 +1,16 @@
+tenant: demo
+dataCenter: "demoDC"
+DNSSelfIP: 10.1.20.6
+DNSListenerIP: 10.1.20.20
+virtualAddresses:
+  - 10.1.10.10
+servers:
+  - name: k8s_ingress1
+    ip: 10.1.20.20
+  - name: k8s_ingress2
+    ip: 10.1.20.21
+wideIPs:
+  - name: test.f5demos.com
+    pool_members:
+      - k8s_ingress1
+      - k8s_ingress2

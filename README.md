@@ -38,6 +38,7 @@ f5 bigip extension do create --declaration dns_2nic.json
 ## Application Service 3 Extension (AS3)
 - Single HTTP application
 - Multiple HTTP applications
+- DNS WideIP with a generic host (example for Kubernetes)
 
 ## Declarative Onboarding
 - LTM with 3 Network Interfaces
